@@ -1,0 +1,99 @@
+openapi: 3.0.3
+info:
+  title: Commercial Catalog & Order API
+  version: 1.0.0
+  description: API central para la sincronización de catálogo y recepción de pedidos de la fuerza de ventas.
+paths:
+  /products:
+    get:
+      summary: Obtener el catálogo de productos actualizado
+      description: Devuelve la lista completa de productos disponibles para la venta. La app usará esto para actualizar su base de datos SQLite local.
+      responses:
+        '200':
+          description: Lista de productos obtenida con éxito.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        '500':
+          description: Error interno del servidor.
+
+  /orders:
+    post:
+      summary: Registrar un nuevo pedido (Sincronización)
+      description: Endpoint utilizado por la aplicación móvil/escritorio para enviar los pedidos realizados, ya sea en tiempo real o acumulados en el modo offline.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderPlacement'
+      responses:
+        '201':
+          description: Pedido procesado y guardado en el servidor correctamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  serverId:
+                    type: string
+                    description: ID definitivo asignado por la base de datos central.
+                  status:
+                    type: string
+                    example: "Processed"
+        '400':
+          description: Datos del pedido inválidos o mal formateados.
+        '500':
+          description: Error al procesar el pedido en el servidor.
+
+components:
+  schemas:
+    Product:
+      type: object
+      required:
+        - id
+        - name
+        - sku
+        - price
+        - category
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Identificador único del producto.
+        name:
+          type: string
+          example: "Laptop Corporativa 15 pulgadas"
+        sku:
+          type: string
+          example: "PROD-LPT-001"
+        price:
+          type: number
+          format: double
+          example: 1250.50
+        imageUrl:
+          type: string
+          example: "https://api.empresa.com/images/laptop.jpg"
+        category:
+          type: string
+          example: "Tecnología"
+
+    OrderPlacement:
+      type: object
+      required:
+        - localOrderId
+        - agentId
+        - createdAt
+        - items
+      properties:
+        localOrderId:
+          type: string
+          format: uuid
+          description: ID generado localmente por SQLite para evitar duplicados en la sincronización asíncrona.
+        agentId:
+          type: string
+          format: uuid
+          description: ID del vendedor que

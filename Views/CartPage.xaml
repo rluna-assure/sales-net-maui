@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FieldSalesForce.Views.CartPage"
+             x:Name="PageRoot"
+             Title="Carrito">
+    <VerticalStackLayout Padding="16" Spacing="16">
+        <Label Text="Carrito de Compras" FontAttributes="Bold" FontSize="24" />
+        <CollectionView ItemsSource="{Binding CartItems}" SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Padding="12" Margin="0,4" CornerRadius="12" BorderColor="LightGray">
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="{Binding ProductName}" FontAttributes="Bold" />
+                            <Label Text="{Binding UnitPrice, StringFormat='Precio unitario: {0:C}'}" />
+                            <Label Text="{Binding Quantity, StringFormat='Cantidad: {0}'}" />
+                            <Label Text="{Binding Subtotal, StringFormat='Subtotal: {0:C}'}" />
+                            <HorizontalStackLayout Spacing="8">
+                                <Button Text="-" Command="{Binding Source={x:Reference PageRoot}, Path=BindingContext.DecrementQuantityCommand}" CommandParameter="{Binding .}" />
+                                <Button Text="+" Command="{Binding Source={x:Reference PageRoot}, Path=BindingContext.IncrementQuantityCommand}" CommandParameter="{Binding .}" />
+                                <Button Text="Eliminar" Command="{Binding Source={x:Reference PageRoot}, Path=BindingContext.RemoveCartItemCommand}" CommandParameter="{Binding .}" BackgroundColor="#FF5A5F" TextColor="White" />
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        <Label Text="Total:" FontAttributes="Bold" />
+        <Label Text="{Binding OrderTotal, StringFormat='Total: {0:C}'}" FontSize="18" />
+        <Button Text="Procesar pedido" Command="{Binding CheckoutCommand}" />
+        <Label Text="{Binding StatusMessage}" TextColor="Green" IsVisible="{Binding StatusMessage, Converter={StaticResource StringToBoolConverter}}" />
+        <Label Text="{Binding ErrorMessage}" TextColor="Red" IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBoolConverter}}" />
+    </VerticalStackLayout>
+</ContentPage>

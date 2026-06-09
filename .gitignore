@@ -1,0 +1,94 @@
+## Ignore Visual Studio temporary files, build results, and user-specific files
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## Build results
+[Bb]in/
+[Oo]bj/
+**/bin/
+**/obj/
+
+## Rider
+.idea/
+
+## VS Code
+.vscode/
+
+## NuGet
+packages/
+*.nupkg
+.nuget/
+project.assets.json
+project.lock.json
+
+## Dotnet
+.dotnet/
+
+## Test results
+TestResults/
+*.trx
+
+## Logs
+*.log
+
+## User-specific files
+*.swp
+*.swo
+*.bak
+*.tmp
+
+## OS generated files
+Thumbs.db
+.DS_Store
+
+## Xamarin / MAUI
+# Visual Studio for Mac
+*.userprefs
+
+# Android
+local.properties
+.gradle/
+**/gradle-wrapper.jar
+**/gradle-wrapper.properties
+**/build/
+*.keystore
+
+# iOS
+*.mode1v3
+*.mode2v3
+*.pbxuser
+*.pbxproj
+*.xcworkspace
+*.xcuserstate
+*.xccheckout
+Pods/
+*.moved-aside
+DerivedData/
+
+# Mac Catalyst
+*.app
+
+## JetBrains
+*.iml
+
+## Coverage and profiling
+coverage*/
+*.coverage
+*.coveragexml
+
+## Database
+*.db
+*.sqlite
+
+## Generated files
+**/*.g.cs
+**/*.designer.cs
+
+## Packed binaries
+*.dll
+*.exe
+*.so
+*.dylib

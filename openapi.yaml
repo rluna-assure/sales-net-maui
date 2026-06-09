@@ -1,0 +1,501 @@
+openapi: 3.0.3
+
+info:
+title: Commercial Catalog & Field Sales API
+version: 1.0.0
+description: REST API for Multiplatform Field Sales Force & Commercial Catalog System
+
+servers:
+  url: https://api.company.com
+
+tags:
+  name: Products
+  name: Categories
+  name: Clients
+  name: Orders
+  name: Synchronization
+
+paths:
+
+/api/products:
+
+
+get:
+  tags:
+    - Products
+  summary: Get products
+  parameters:
+    - in: query
+      name: search
+      schema:
+        type: string
+
+    - in: query
+      name: categoryId
+      schema:
+        type: integer
+
+    - in: query
+      name: page
+      schema:
+        type: integer
+
+    - in: query
+      name: pageSize
+      schema:
+        type: integer
+
+  responses:
+    "200":
+      description: Product list
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Product'
+
+
+/api/products/{id}:
+
+
+get:
+  tags:
+    - Products
+  summary: Get product details
+
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+
+  responses:
+    "200":
+      description: Product details
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Product'
+
+    "404":
+      description: Product not found
+
+
+/api/categories:
+
+
+get:
+  tags:
+    - Categories
+  summary: Get categories
+
+  responses:
+    "200":
+      description: Categories
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Category'
+
+
+/api/clients:
+
+
+get:
+  tags:
+    - Clients
+  summary: Get clients
+
+  parameters:
+    - name: search
+      in: query
+      schema:
+        type: string
+
+  responses:
+    "200":
+      description: Client list
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Client'
+
+
+/api/clients/{id}:
+
+
+get:
+  tags:
+    - Clients
+  summary: Get client details
+
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+
+  responses:
+    "200":
+      description: Client detail
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Client'
+
+
+/api/orders:
+
+
+post:
+  tags:
+    - Orders
+  summary: Create order
+
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/CreateOrderRequest'
+
+  responses:
+    "201":
+      description: Order created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateOrderResponse'
+
+    "400":
+      description: Validation error
+
+get:
+  tags:
+    - Orders
+  summary: Get orders
+
+  parameters:
+
+    - name: clientId
+      in: query
+      schema:
+        type: integer
+
+    - name: syncStatus
+      in: query
+      schema:
+        type: string
+
+    - name: startDate
+      in: query
+      schema:
+        type: string
+        format: date
+
+    - name: endDate
+      in: query
+      schema:
+        type: string
+        format: date
+
+  responses:
+    "200":
+      description: Order history
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Order'
+
+
+/api/orders/{id}:
+
+
+get:
+  tags:
+    - Orders
+  summary: Get order detail
+
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+  responses:
+    "200":
+      description: Order detail
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Order'
+
+    "404":
+      description: Order not found
+
+
+/api/orders/{id}/status:
+
+
+get:
+  tags:
+    - Orders
+  summary: Get synchronization status
+
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+  responses:
+    "200":
+      description: Sync status
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OrderSyncStatus'
+
+
+/api/sync:
+
+
+post:
+  tags:
+    - Synchronization
+  summary: Synchronize pending orders
+
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/SyncRequest'
+
+  responses:
+    "200":
+      description: Synchronization completed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SyncResponse'
+
+
+components:
+
+schemas:
+
+
+Product:
+
+  type: object
+
+  properties:
+    id:
+      type: integer
+
+    code:
+      type: string
+
+    name:
+      type: string
+
+    description:
+      type: string
+
+    price:
+      type: number
+      format: decimal
+
+    stock:
+      type: integer
+
+    categoryId:
+      type: integer
+
+    imageUrl:
+      type: string
+
+    lastUpdated:
+      type: string
+      format: date-time
+
+Category:
+
+  type: object
+
+  properties:
+    id:
+      type: integer
+
+    name:
+      type: string
+
+Client:
+
+  type: object
+
+  properties:
+    id:
+      type: integer
+
+    fullName:
+      type: string
+
+    taxId:
+      type: string
+
+    phone:
+      type: string
+
+    address:
+      type: string
+
+Order:
+
+  type: object
+
+  properties:
+
+    id:
+      type: string
+      format: uuid
+
+    clientId:
+      type: integer
+
+    date:
+      type: string
+      format: date-time
+
+    total:
+      type: number
+      format: decimal
+
+    syncStatus:
+      $ref: '#/components/schemas/SyncStatus'
+
+    items:
+      type: array
+      items:
+        $ref: '#/components/schemas/OrderItem'
+
+OrderItem:
+
+  type: object
+
+  properties:
+
+    productId:
+      type: integer
+
+    quantity:
+      type: integer
+
+    unitPrice:
+      type: number
+      format: decimal
+
+    total:
+      type: number
+      format: decimal
+
+CreateOrderRequest:
+
+  type: object
+
+  required:
+    - clientId
+    - items
+
+  properties:
+
+    clientId:
+      type: integer
+
+    items:
+      type: array
+      items:
+        $ref: '#/components/schemas/OrderItem'
+
+CreateOrderResponse:
+
+  type: object
+
+  properties:
+
+    orderId:
+      type: string
+      format: uuid
+
+    syncStatus:
+      $ref: '#/components/schemas/SyncStatus'
+
+SyncRequest:
+
+  type: object
+
+  properties:
+
+    orders:
+      type: array
+      items:
+        $ref: '#/components/schemas/Order'
+
+SyncResponse:
+
+  type: object
+
+  properties:
+
+    synchronized:
+      type: integer
+
+    failed:
+      type: integer
+
+    errors:
+      type: array
+      items:
+        type: string
+
+OrderSyncStatus:
+
+  type: object
+
+  properties:
+
+    orderId:
+      type: string
+      format: uuid
+
+    status:
+      $ref: '#/components/schemas/SyncStatus'
+
+    lastAttempt:
+      type: string
+      format: date-time
+
+SyncStatus:
+
+  type: string
+
+  enum:
+    - Pending
+    - Synchronizing
+    - Synchronized
+    - Failed
+
